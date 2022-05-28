@@ -1,44 +1,33 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-bool color_graph(vector<int> &visited, int i, vector<int> adj[], vector<int> color)
+bool color_graph(int i, vector<int> adj[], vector<int>&color)
 {
     // Do a BFS
     queue<int> q;
     q.push(i);
-    visited[i] = 1;
-    int colour = 0;
-    color[i] = colour;
-    colour = !colour;
+    color[i] = 0;
+
     while (!q.empty())
     {
         int front = q.front();
         q.pop();
-        colour = !color[front];
+
         for (auto it : adj[front])
         {
-            if (visited[it])
+            if (color[it] != -1)
             {
                 if (color[it] == color[front])
                 {
-                    cout << "for " << front << " and " << it << endl;
                     return false;
                 }
             }
             else
             {
                 q.push(it);
-                visited[it] = true;
-                color[it] = colour;
+                color[it] = 1 - color[front];
             }
         }
-        //colour = !colour;
-
-        for (auto it : color)
-        {
-            cout << it << " ";
-        }
-        cout << endl;
     }
 
     return true;
@@ -58,10 +47,24 @@ int main()
         adj[v].push_back(u);
     }
 
-    vector<int> visited(n + 1, 0);
     vector<int> colour(n + 1, -1);
 
-    bool ans = color_graph(visited, 1, adj, colour);
+    for (int i = 1; i <= n; i++)
+    {
 
-    cout << ans << endl;
+        if (colour[i] == -1)
+        {
+            bool ans = color_graph(1, adj, colour);
+
+            if (!ans)
+            {
+                cout << "No" << endl;
+                break;
+            }
+        }
+        if (i == n)
+        {
+            cout << "Yes" << endl;
+        }
+    }
 }
