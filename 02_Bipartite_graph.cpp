@@ -1,7 +1,7 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-bool color_graph(int i, vector<int> adj[], vector<int>&color)
+bool color_graph_BFS(int i, vector<int> adj[], vector<int> &color)
 {
     // Do a BFS
     queue<int> q;
@@ -33,6 +33,30 @@ bool color_graph(int i, vector<int> adj[], vector<int>&color)
     return true;
 }
 
+bool color_graph_DFS(int i, vector<int> adj[], vector<int> &color)
+{
+    if (color[i] == -1)
+    {
+        color[i] = 1;
+    }
+    for (auto it : adj[i])
+    {
+        if (color[it] == -1)
+        {
+            color[it] = 1 - color[i];
+            if (!color_graph_DFS(it, adj, color))
+            {
+                return false;
+            }
+        }
+        else if (color[it] == color[i])
+        {
+            return false;
+        }
+    }
+    return true;
+}
+
 int main()
 {
     int n, m;
@@ -54,7 +78,8 @@ int main()
 
         if (colour[i] == -1)
         {
-            bool ans = color_graph(1, adj, colour);
+            // bool ans = color_graph_BFS(1, adj, colour);
+            bool ans = color_graph_DFS(1, adj, colour);
 
             if (!ans)
             {
